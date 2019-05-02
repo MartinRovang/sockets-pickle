@@ -50,7 +50,11 @@ class Server:
 
    
    def upload_stats(self, player_name):
-      loaded = pickle.load(file = open('player_base/%s.pkl'%player_name, 'rb'))
+      try:
+         loaded = pickle.load(file = open('player_base/%s.pkl'%player_name, 'rb'))
+      except:
+         print('User does not exist')
+         return None
       return loaded
 
 
