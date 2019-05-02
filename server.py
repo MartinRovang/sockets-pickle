@@ -31,31 +31,33 @@ class Server:
          print('Got connection from', addr )
          # Retrieved from client
          retrieved = pickle.loads(c.recv(1024))
-         print(retrieved)
-         if type(retrieved) != str:
-            self.save_stats(retrieved)
-            # send back to client
-            # c.send(b'Info saved')
-            # Close the connection with the client 
-            c.close()
-         else:
-            loaded = self.upload_stats(retrieved)
-            loaded_byte = pickle.dumps(loaded)
-            c.send(loaded_byte)
-            c.close()
+         loaded = self.save_stats(retrieved)
+         # send back to client
+         loaded_byte = pickle.dumps(loaded)
+         c.send(loaded_byte)
+         # Close the connection with the client 
+         c.close()
 
-      
+
    def save_stats(self, player):
-      pickle.dump(player, file = open('player_base/%s.pkl'%player.name, 'wb'))
+      loaded = self.upload_stats(player)
+      if loaded == None:
+         print('User does not exist, creating %s'%player.name)
+         pickle.dump(player, file = open('player_base/%s.pkl'%player.name, 'wb'))
+      else:
+         return loaded
 
-   
-   def upload_stats(self, player_name):
+
+
+   def upload_stats(self, player):
       try:
-         loaded = pickle.load(file = open('player_base/%s.pkl'%player_name, 'rb'))
+         loaded = pickle.load(file = open('player_base/%s.pkl'%player.name, 'rb'))
+         if loaded.password != player.password:
+            return 'Password is incorrect'
+         else:
+            return loaded
       except:
-         print('User does not exist')
-         return None
-      return loaded
+         return 'User %s created'%player.name
 
 
 

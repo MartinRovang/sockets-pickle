@@ -13,7 +13,7 @@ class Game:
         self.client = Client()
         
         # User registrer
-        msg = "Register new player"
+        msg = "Register new player/login"
         title = "Demo of multpasswordbox"
         fieldNames = ["User ID", "Password"]
         fieldValues = []  # we start with blanks for the values
@@ -26,18 +26,19 @@ class Game:
             errmsg = ""
             for i in range(len(fieldNames)):
                 if fieldValues[i].strip() == "":
-                    errmsg = errmsg + ('"%s" is a required field.\n\n' % fieldNames[i])
+                    errmsg = errmsg + ('"%s" is a required field.\n\n' %fieldNames[i])
             if errmsg == "": 
                 break # no problems found
             fieldValues = multpasswordbox(errmsg, title, fieldNames, fieldValues)
 
-        print("Reply was:", fieldValues)
+        player_name, password = fieldValues
+        new_player = Player(player_name, password)
+        loaded = self.client.retrieve(new_player)
+        if type(loaded) == str:
+            print(loaded)
+        else:
+            print('health: %s'%loaded.health)
 
-        player_name = fieldValues[0]
-        login = self.client.retrieve(player_name)
-        if login == None:
-            new_player = Player(player_name)
-            self.client.send(new_player)
 
 if __name__ == "__main__":
     game = Game()

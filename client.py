@@ -16,12 +16,12 @@ class Client:
         self.s.send(info_byte)
         self.s.close()
 
-    def retrieve(self, string):
+    def retrieve(self, info):
         # Create a socket object 
         self.s = socket.socket()
         # connect to the server on local computer 
         self.s.connect(('foxxy.ddns.net', self.port))
-        info_byte = pickle.dumps(string)
+        info_byte = pickle.dumps(info)
         self.s.send(info_byte)
         retrieved_info = self.s.recv(1024)
         info_retrieve = pickle.loads(retrieved_info)
